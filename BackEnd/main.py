@@ -23,57 +23,8 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi import FastAPI, HTTPException, Body
-app = FastAPI()
 
-weights = {
-    "episodes": 1,
-    "airing": 0,
-    "duration": 1,
-    "rating": 1,
-    "score": 1,
-    "year": 1,
-    "Action": 1,
-    "Adventure": 1,
-    "Award Winning": 1,
-    "Comedy": 1,
-    "Drama": 1,
-    "Fantasy": 0,
-    "Horror": 1,
-    "Mystery": 0,
-    "Romance": 1,
-    "Sci-Fi": 0,
-    "Slice of Life": 0,
-    "Sports": 1000,
-    "Supernatural": 0,
-    "Suspense": 0
-}   
-
-# sample = {
-#     "episodes": [100],
-#     "airing": [0],
-#     "duration": [2],
-#     "rating": [5],
-#     "score": [1],
-#     "year": [1],
-#     "Action": [1],
-#     "Adventure": [1],
-#     "Award Winning": [1],
-#     "Comedy": [1],
-#     "Drama": [0],
-#     "Fantasy": [1],
-#     "Horror": [0],
-#     "Mystery": [1],
-#     "Romance": [1],
-#     "Sci-Fi": [1],
-#     "Slice of Life": [0],
-#     "Sports": [1],
-#     "Supernatural": [0],
-#     "Suspense": [0]
-# }   
-
-
-
-def similarity(row1,row2):
+def similarity(row1,row2,weights):
     similarity = 0
     for attribute, weight in weights.items():
         similarity += weight * cosine_similarity(np.array(row1[attribute]).reshape(1,-1), np.array(row2[attribute]).reshape(1,-1) )
@@ -85,34 +36,71 @@ def recommend(sample):
     df = df.sort_values(by=['similarity'],ascending=False)
     return df['mal_id'].iloc[:5].tolist()
 
+def getSample(rules,weight,answerns):
+    for rule in rules:
+        cause, sympthons, val = rule.split(";")
+        sympthons = sympthons.split(",")
+        print(sympthons)
+
+    sample = {
+        "episodes": [100],
+        "airing": [0],
+        "duration": [2],
+        "rating": [5],
+        "score": [1],
+        "year": [1],
+        "Action": [1],
+        "Adventure": [1],
+        "Award Winning": [1],
+        "Comedy": [1],
+        "Drama": [0],
+        "Fantasy": [1],
+        "Horror": [0],
+        "Mystery": [1],
+        "Romance": [1],
+        "Sci-Fi": [1],
+        "Slice of Life": [0],
+        "Sports": [1],
+        "Supernatural": [0],
+        "Suspense": [0]
+    }  
+    return sample
+    
+
+app = FastAPI() 
+app.df = pd.read_csv("../Data Extraction/result.csv")
+app.weights = {
+    "episodes": 0,
+    "airing": 0,
+    "duration": 0,
+    "rating": 0,
+    "score": 0,
+    "year": 0,
+    "Action": 0,
+    "Adventure": 0,
+    "Award Winning": 0,
+    "Comedy": 0,
+    "Drama": 0,
+    "Fantasy": 0,
+    "Horror": 0,
+    "Mystery": 0,
+    "Romance": 0,
+    "Sci-Fi": 0,
+    "Slice of Life": 0,
+    "Sports": 0,
+    "Supernatural": 0,
+    "Suspense": 0
+}   
+
+app.rules = open("./rules.txt").read().splitlines()
+
 
 @app.get('/')
-async def recommend(params: dict = Body(...)):
-    try:
+async def recommend(params: list = Body(...)):
+    try:       
+        sample = getSample(app.rules,app.weights,params)
         df = pd.read_csv("../Data Extraction/result.csv")
-        sample = {
-            "episodes": [params.get('episodes', [0])],
-            "airing": [params.get('airing', [0])],
-            "duration": [params.get('duration', [0])],
-            "rating": [params.get('rating', [0])],
-            "score": [params.get('score', [0])],
-            "year": [params.get('year', [0])],
-            "Action": [params.get('Action', [0])],
-            "Adventure": [params.get('Adventure', [0])],
-            "Award Winning": [params.get('Award Winning', [0])],
-            "Comedy": [params.get('Comedy', [0])],
-            "Drama": [params.get('Drama', [0])],
-            "Fantasy": [params.get('Fantasy', [0])],
-            "Horror": [params.get('Horror', [0])],
-            "Mystery": [params.get('Mystery', [0])],
-            "Romance": [params.get('Romance', [0])],
-            "Sci-Fi": [params.get('Sci-Fi', [0])],
-            "Slice of Life": [params.get('Slice of Life', [0])],
-            "Sports": [params.get('Sports', [0])],
-            "Supernatural": [params.get('Supernatural', [0])],
-            "Suspense": [params.get('Suspense', [0])]
-        }   
-        df["similarity"] = df.apply(lambda row: similarity(row1=row, row2=sample), axis=1)
+        df["similarity"] = df.apply(lambda row: similarity(row1=row, row2=sample,weights=app.weights), axis=1)
         df = df.sort_values(by=['similarity'],ascending=False)
         return df['mal_id'].iloc[:5].tolist()
     except Exception as e:
