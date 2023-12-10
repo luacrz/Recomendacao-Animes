@@ -1,25 +1,20 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Tree from './pages/Tree';
 
+import questions from '../questions';
+import { useState } from 'react';
+
 export default function App() {
+  const [questoes, setQuestoes] = useState<string[]>(questions)
+
   return (
     <Router>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/outra">Outra Página</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <Route path="/" component={Home} />
-        <Route path="/outra" component={Tree} />
+        <Routes>
+          <Route path="/" element={<Home questions={questoes} />} />
+          <Route path="/tree" element={<Tree questions={questoes} changeQuestions={setQuestoes} />} />
+        </Routes>
       </div>
     </Router>
   );

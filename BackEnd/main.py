@@ -127,9 +127,9 @@ app.rules = open("./rules.txt").read().splitlines()
 
 @app.post('/')
 async def recommend(params = Body(...)):
-    print(params)
+    print(params['body'])
     try:   
-        sample = getSample(app.rules,app.weights,params)
+        sample = getSample(app.rules,app.weights,params['body'])
         ans = recom(sample,app.df,app.weights)
         return app.df['mal_id'].iloc[:5].tolist()
     except Exception as e:

@@ -1,32 +1,23 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import { api } from '../../lib/api.ts'
 import Button from '../../components/button.tsx'
 import animeGif from '../../assets/anime-dance.gif'
 import { anime } from '../../../Types.ts'
 
-const questions = [
-  'Você é do tipo que gosta de maratonar animes e terminar na mesma semana?',
-  'Quando escolhe assistir a um anime, você costuma levar em consideração as avaliações e críticas?',
-  'Você gosta de animes nostálgicos?',
-  'Você tem preferência por animes que se destacam pelas cenas de ação intensas e empolgantes?',
-  'Você se sente inclinado  a assistir a animes que exploram aventuras épicas e jornadas emocionantes?',
-  'Você costuma buscar animes que receberam prêmios e reconhecimento por sua qualidade?',
-  'Quando se trata de escolher um anime para assistir, você geralmente procura por aqueles que te fazem dar boas risadas?',
-  'Você costuma se envolver mais em animes que exploram temas dramáticos e emocionais?',
-  'Você costuma se interessar por animes que exploram mundos imaginários e elementos sobrenaturais?',
-  'Você gosta de animes que exploram sustos e suspense?',
-  'Você gosta de animes com investigações e mistérios?',
-  'Você gosta de boas histórias de amor?',
-  'Você se interessa por animes que exploram conceitos futuristas e tecnologia avançada?'
-]
+interface HomeProps {
+  questions: string[]
+}
 
-export default function Home() {
+export default function Home({questions}: HomeProps) {
   const [question, setQuestion] = useState<number>(0)
   const [doQuestion, setDoQuestion] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
   const [answer, setAnswer] = useState<(0 | 1 | -1)[]>([])
   const [animes, setAnimes] = useState<anime[]>()
+
+  const navigate = useNavigate();
 
   const malApi = axios.create({
     baseURL: 'https://api.jikan.moe/v4/anime'
@@ -54,7 +45,8 @@ export default function Home() {
 
         const resposta = {
           image_url: response2.data.data.images.jpg.image_url,
-          title: response2.data.data.title
+          title: response2.data.data.title,
+          id: response2.data.data.id
         }
         lista.push(resposta)
       }
@@ -86,9 +78,9 @@ export default function Home() {
 
   return (
     <>
-      <div className='flex flex-col h-screen w-full p-8' onClick={() => navigator('/tree')}>
+      <div className='flex flex-col h-screen w-full p-8'>
         <div className="flex justify-end w-full">
-          <button className="text-2xl text-white bg-green-950 px-6 py-4 rounded-xl">
+          <button className="text-2xl text-white bg-green-950 px-6 py-4 rounded-xl" onClick={() => {navigate('/tree')}}>
             Tree
           </button>
         </div>
@@ -113,7 +105,7 @@ export default function Home() {
               <p>Aqui estão algumas sugestões:</p>
               <div className="flex flex-row space-x-8">
                 {animes?.map(anime => (
-                  <div className="flex flex-col justify-center items-center space-y-6 text-2xl">
+                  <div key={anime.id} className="flex flex-col justify-center items-center space-y-6 text-2xl">
                     <img src={anime.image_url} alt="Imagem do anime." />
                     <p>{anime.title}</p>
                   </div>
