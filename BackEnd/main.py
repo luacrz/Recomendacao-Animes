@@ -48,28 +48,28 @@ weights = {
     "Suspense": 0
 }   
 
-sample = {
-    "episodes": [100],
-    "airing": [0],
-    "duration": [2],
-    "rating": [5],
-    "score": [1],
-    "year": [1],
-    "Action": [1],
-    "Adventure": [1],
-    "Award Winning": [1],
-    "Comedy": [1],
-    "Drama": [0],
-    "Fantasy": [1],
-    "Horror": [0],
-    "Mystery": [1],
-    "Romance": [1],
-    "Sci-Fi": [1],
-    "Slice of Life": [0],
-    "Sports": [1],
-    "Supernatural": [0],
-    "Suspense": [0]
-}   
+# sample = {
+#     "episodes": [100],
+#     "airing": [0],
+#     "duration": [2],
+#     "rating": [5],
+#     "score": [1],
+#     "year": [1],
+#     "Action": [1],
+#     "Adventure": [1],
+#     "Award Winning": [1],
+#     "Comedy": [1],
+#     "Drama": [0],
+#     "Fantasy": [1],
+#     "Horror": [0],
+#     "Mystery": [1],
+#     "Romance": [1],
+#     "Sci-Fi": [1],
+#     "Slice of Life": [0],
+#     "Sports": [1],
+#     "Supernatural": [0],
+#     "Suspense": [0]
+# }   
 
 
 
