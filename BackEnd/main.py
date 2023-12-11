@@ -72,6 +72,10 @@ def getSample(rules,weight,answerns):
         sympthons = treatSymptons(sympthons)
 
         aprove = True
+
+        print(f"cause: {cause}")
+        print(f"sympthons: {sympthons}")
+        print(f"val: {val}\n")
         for symp in sympthons:
             if(symp[0]==1):
                 if(answerns[symp[1]]!=symp[2]):
@@ -128,10 +132,10 @@ app.rules = open("./rules.txt").read().splitlines()
 
 @app.post('/')
 async def recommend(params = Body(...)):
-    print(params['body'])
     try:   
         sample = getSample(app.rules,app.weights,params['body'])
+        print("reached\n")
         ans = recom(sample,app.df,app.weights)
-        return app.df['mal_id'].iloc[:5].tolist()
+        return ans
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
