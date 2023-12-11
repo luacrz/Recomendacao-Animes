@@ -71,11 +71,10 @@ export default function Home({questions}: HomeProps) {
     }
   }
 
-  function handleRestart() {
-    setQuestion(0)
-    setDoQuestion(true)
-  }
-
+  function refreshPage(){ 
+    window.location.reload(); 
+  } 
+  
   return (
     <>
       <div className='flex flex-col h-screen w-full p-8'>
@@ -113,7 +112,7 @@ export default function Home({questions}: HomeProps) {
               </div>
               <button
                 className="text-2xl text-white bg-black px-8 py-6 rounded-xl"
-                onClick={handleRestart}
+                onClick={refreshPage}
               >
                 Fazer de novo
               </button>
