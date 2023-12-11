@@ -13,8 +13,20 @@ Este é um sistema especialista desenvolvido para recomendar animes aos usuário
 
 ## Como Utilizar:
 
-1. **Perfil do Usuário:**
-   - O sistema leva em consideração informações sobre gostos do usuário em relação aos animes que assistiu anteriormente ou que tem interesse em assistir.
-
-2. **Geração de Recomendações:**
-   - Com base no perfil, a árvore de decisão é percorrida para gerar recomendações personalizadas de animes.
+   Pra visualizar este projeto, clone o repositório:
+ ```
+   git clone https://github.com/luacrz/Recomendacao-Animes.git
+ ```
+  Vá para o diretório do back-end, instale o Pandas (caso não o tenha instalado) e rode o servidor
+  ```
+  cd BackEnd
+  pip install pandas
+  uvicorn main:app --reload
+  ```
+ Vá para o diretório do front-end, instale as dependências e rode o servidor
+  ```
+    cd ../frontend_paa/
+    npm install 
+    npm run dev
+  ```
+ Em seguida, acesse a aplicação em qualquer navegador pela URL informada no terminal (geralmente http://localhost:5173/)
