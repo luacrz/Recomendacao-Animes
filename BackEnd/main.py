@@ -7,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 def similarity(row1,row2,weights):
     similarity = 0
     for attribute, weight in weights.items():
-        print(attribute,weight)
         similarity += weight * cosine_similarity(np.array(row1[attribute]).reshape(1,-1), np.array(row2[attribute]).reshape(1,-1) )[0,0]
     return similarity
 
@@ -86,6 +85,8 @@ def getSample(rules,weight,answerns):
             auxVal = cause[cause.find(":")+1: cause.find("\"",cause.find(":"))]
             weight[attrName]= float(val)
             sample[attrName]= int(auxVal)
+    print(f"samples: {sample}\n")
+    print(f"weights: {weight}\n")
     return sample
     
 
