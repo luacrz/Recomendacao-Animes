@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi import FastAPI, HTTPException, Body
+from fastapi.middleware.cors import CORSMiddleware
 
 def similarity(row1,row2,weights):
     similarity = 0
@@ -89,9 +90,16 @@ def getSample(rules,weight,answerns):
     return sample
     
 
-app = FastAPI() 
-app.df = pd.read_csv("../Data Extraction/result.csv")
-
+df = pd.read_csv("../Data Extraction/result.csv")
+app = FastAPI()
+app.df = df
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.weights = {
     "episodes": 0,
     "airing": 0,
@@ -118,9 +126,10 @@ app.weights = {
 app.rules = open("./rules.txt").read().splitlines()
 
 
-@app.get('/')
+@app.post('/')
 async def recommend(params = Body(...)):
-    try:       
+    print(params['body'])
+    try:   
         sample = getSample(app.rules,app.weights,params['body'])
         ans = recom(sample,app.df,app.weights)
         return app.df['mal_id'].iloc[:5].tolist()
