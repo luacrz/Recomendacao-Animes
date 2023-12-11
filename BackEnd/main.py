@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
+import requests
+import time
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
+
 
 def similarity(row1,row2,weights):
     similarity = 0
@@ -48,7 +51,7 @@ def getSample(rules,weight,answerns):
         "episodes": [0],
         "airing": [0],
         "duration": [0],
-        "rating": [0],
+        "rank": [0],
         "score": [0],
         "year": [0],
         "Action": [0],
@@ -64,7 +67,10 @@ def getSample(rules,weight,answerns):
         "Slice of Life": [0],
         "Sports": [0],
         "Supernatural": [0],
-        "Suspense": [0]
+        "Suspense": [0],
+        "Shounen": [0],
+        "Seinen": [0],
+        "Josei": [0]
     }  
         
     for rule in rules:
@@ -108,7 +114,7 @@ app.weights = {
     "episodes": 0,
     "airing": 0,
     "duration": 0,
-    "rating": 0,
+    "rank": 0,
     "score": 0,
     "year": 0,
     "Action": 0,
@@ -124,7 +130,10 @@ app.weights = {
     "Slice of Life": 0,
     "Sports": 0,
     "Supernatural": 0,
-    "Suspense": 0
+    "Suspense": 0,
+    "Shounen": 0,
+    "Seinen": 0,
+    "Josei": 0
 }   
 
 app.rules = open("./rules.txt").read().splitlines()
@@ -132,10 +141,20 @@ app.rules = open("./rules.txt").read().splitlines()
 
 @app.post('/')
 async def recommend(params = Body(...)):
-    try:   
-        sample = getSample(app.rules,app.weights,params['body'])
-        print("reached\n")
-        ans = recom(sample,app.df,app.weights)
-        return ans
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    tentativas = 5
+    i = 0
+    while i <= tentativas:
+        try:   
+            sample = getSample(app.rules,app.weights,params['body'])
+            print("reached\n")
+            ans = recom(sample,app.df,app.weights)
+            return ans
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                tempo_espero = 2 ** i
+                time.sleep(tempo_espero)
+                i += 1
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
+    
+            
