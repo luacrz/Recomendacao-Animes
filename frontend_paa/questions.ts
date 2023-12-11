@@ -11,7 +11,9 @@ const questions = [
   'Você gosta de animes que exploram sustos e suspense?',
   'Você gosta de animes com investigações e mistérios?',
   'Você gosta de boas histórias de amor?',
-  'Você se interessa por animes que exploram conceitos futuristas e tecnologia avançada?'
+  'Você se interessa por animes que exploram conceitos futuristas e tecnologia avançada?',
+  'Você gosta de animes que podem te incentivar a praticar um esporte?',
+  'Você gosta de animes que mostram o cotidiano dos personagens?'
 ]
 
 export default questions

@@ -62,8 +62,8 @@ export default function Home({questions}: HomeProps) {
     setAnswer(prevAnswer => (prevAnswer ? [...prevAnswer, type] : [type]))
 
     setQuestion(question + 1)
-
-    if (question + 1 === questions.length) {
+    
+    if (question == questions.length ) {
       setAnswer(prevAnswer => (prevAnswer ? [...prevAnswer, 1] : [1]))
       setDoQuestion(false)
       setLoading(true)
@@ -74,6 +74,7 @@ export default function Home({questions}: HomeProps) {
   function refreshPage(){ 
     window.location.reload(); 
   } 
+
   return (
     <>
       <div className='flex flex-col h-screen w-full p-8'>
