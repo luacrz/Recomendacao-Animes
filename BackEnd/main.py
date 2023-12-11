@@ -6,7 +6,6 @@ from fastapi import FastAPI, HTTPException, Body
 def similarity(row1,row2,weights):
     similarity = 0
     for attribute, weight in weights.items():
-        print(attribute,weight)
         similarity += weight * cosine_similarity(np.array(row1[attribute]).reshape(1,-1), np.array(row2[attribute]).reshape(1,-1) )[0,0]
     return similarity
 
@@ -85,6 +84,8 @@ def getSample(rules,weight,answerns):
             auxVal = cause[cause.find(":")+1: cause.find("\"",cause.find(":"))]
             weight[attrName]= float(val)
             sample[attrName]= int(auxVal)
+    print(f"samples: {sample}\n")
+    print(f"weights: {weight}\n")
     return sample
     
 
@@ -118,9 +119,9 @@ app.rules = open("./rules.txt").read().splitlines()
 
 
 @app.get('/')
-async def recommend(params: list = Body(...)):
+async def recommend(params = Body(...)):
     try:       
-        sample = getSample(app.rules,app.weights,params)
+        sample = getSample(app.rules,app.weights,params['body'])
         ans = recom(sample,app.df,app.weights)
         return app.df['mal_id'].iloc[:5].tolist()
     except Exception as e:
