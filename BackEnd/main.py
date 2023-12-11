@@ -147,7 +147,7 @@ async def recommend(params = Body(...)):
         try:   
             sample = getSample(app.rules,app.weights,params['body'])
             print("reached\n")
-            ans = recom(sample,app.df,app.weights)
+            ans = recom(sample,app.df,app.weights)           
             return ans
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
