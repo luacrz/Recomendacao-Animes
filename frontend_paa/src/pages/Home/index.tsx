@@ -63,11 +63,15 @@ export default function Home({questions}: HomeProps) {
 
     setQuestion(question + 1)
 
-    if (question === questions.length - 1) {
+    if (question === questions.length-1) {
       setAnswer(prevAnswer => (prevAnswer ? [...prevAnswer, 1] : [1]))
       setDoQuestion(false)
       setLoading(true)
+      // handleSendData()
+    }else if(question===questions.length){
+      setAnswer(prevAnswer => (prevAnswer ? [...prevAnswer, 1] : [1]))
       handleSendData()
+
     }
   }
 
