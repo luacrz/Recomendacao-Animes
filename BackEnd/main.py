@@ -7,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 def similarity(row1,row2,weights):
     similarity = 0
     for attribute, weight in weights.items():
-        print(attribute,weight)
         similarity += weight * cosine_similarity(np.array(row1[attribute]).reshape(1,-1), np.array(row2[attribute]).reshape(1,-1) )[0,0]
     return similarity
 
@@ -73,6 +72,10 @@ def getSample(rules,weight,answerns):
         sympthons = treatSymptons(sympthons)
 
         aprove = True
+
+        print(f"cause: {cause}")
+        print(f"sympthons: {sympthons}")
+        print(f"val: {val}\n")
         for symp in sympthons:
             if(symp[0]==1):
                 if(answerns[symp[1]]!=symp[2]):
@@ -86,6 +89,8 @@ def getSample(rules,weight,answerns):
             auxVal = cause[cause.find(":")+1: cause.find("\"",cause.find(":"))]
             weight[attrName]= float(val)
             sample[attrName]= int(auxVal)
+    print(f"samples: {sample}\n")
+    print(f"weights: {weight}\n")
     return sample
     
 
@@ -127,10 +132,10 @@ app.rules = open("./rules.txt").read().splitlines()
 
 @app.post('/')
 async def recommend(params = Body(...)):
-    print(params['body'])
     try:   
         sample = getSample(app.rules,app.weights,params['body'])
+        print("reached\n")
         ans = recom(sample,app.df,app.weights)
-        return app.df['mal_id'].iloc[:5].tolist()
+        return ans
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
